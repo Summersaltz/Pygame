@@ -1,6 +1,7 @@
 #Pygame
 import pygame
 import random
+from os import path
 
 WIDTH = 480
 HEIGHT = 600
@@ -13,12 +14,15 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
+#set up image folder
+img_dir = path.join(path.dirname(__file__), 'img')
+
 class Player(pygame.sprite.Sprite):
     #sprite for player
     def __init__(self): #initializes sprite
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((45,45))
-        self.image.fill(BLUE)
+        self.image = player_img
+        self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
         self.rect.centerx = (WIDTH/2)
         self.rect.bottom = HEIGHT - 15
@@ -46,12 +50,12 @@ class Player(pygame.sprite.Sprite):
 class Mob(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((25,35))
-        self.image.fill(GREEN)
+        self.image = mob_img
+        self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
         self.rect.x = random.randrange(WIDTH - self.rect.width)
         self.rect.y = random.randrange(-100, -40)
-        self.speedy = random.randrange(2, 10)
+        self.speedy = random.randrange(2, 8)
         self.speedx = random.randrange(-2, 2)
         
     def update(self):
@@ -60,14 +64,14 @@ class Mob(pygame.sprite.Sprite):
         if self.rect.top > HEIGHT + 10 or self.rect.right < 0 or self.rect.left > WIDTH: 
             self.rect.x = random.randrange(WIDTH - self.rect.width)
             self.rect.y = random.randrange(-100, -40)
-            self.speedy = random.randrange(2, 10)
+            self.speedy = random.randrange(2, 8)
             self.speedx = random.randrange(-2, 2)
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self,x,y):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((10, 20))
-        self.image.fill(RED)
+        self.image = bullet_img
+        self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
         self.rect.bottom = y
         self.rect.centerx = x
@@ -84,6 +88,11 @@ pygame.mixer.init() #enalbles sound
 screen = pygame.display.set_mode((WIDTH,HEIGHT))
 pygame.display.set_caption("My Game")
 clock = pygame.time.Clock()
+
+#load images
+player_img = pygame.image.load(path.join(img_dir,"ship.png")).convert()
+mob_img = pygame.image.load(path.join(img_dir, "meteor.png")).convert()
+bullet_img = pygame.image.load(path.join(img_dir, "laser3.png")).convert()
 
 all_sprites = pygame.sprite.Group()
 player = Player()
